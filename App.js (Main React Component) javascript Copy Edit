@@ -1,0 +1,46 @@
+import React, { useState } from "react";
+import axios from "axios";
+import './App.css';
+
+function App() {
+  const [query, setQuery] = useState("");
+  const [response, setResponse] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.post("http://localhost:8000/query/", {
+        query: query,
+      });
+      setResponse(res.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  return (
+    <div className="App">
+      <h1>AI-powered Chatbot</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Ask about products or suppliers"
+        />
+        <button type="submit">Ask</button>
+      </form>
+
+      {response && (
+        <div className="response">
+          <h3>Response:</h3>
+          <p><strong>Original Data:</strong> {response.result}</p>
+          <p><strong>Summary:</strong> {response.summary}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
